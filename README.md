@@ -4,10 +4,17 @@ This project demonstrates how an object is closer to the sensor. The sensor dete
 
 
 Hardware Requirements
+
 -Arduino Uno 
+
 -Breadboard
+
 -Ultrasonic Distance Sensor
+
 -Piezo buzzer
+
 -4 digit 7 segment display
+
 -Jumper wires
+
 220ohm resistors
