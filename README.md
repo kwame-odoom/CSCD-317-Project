@@ -17,4 +17,6 @@ Hardware Requirements
 
 -Jumper wires
 
-220ohm resistors
+-220ohm resistors
+
+-Led
