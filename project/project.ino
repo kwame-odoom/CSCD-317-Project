@@ -19,11 +19,8 @@ const int redLed = 3;
 const int blueLed = 5;
 const int greenLed = 4;
 int DistanceCm;
-int MAX_DISTANCE =600;
-/*-----( Declare objects )-----*/
 // Maximum distance we want to ping for (in centimeters).
-//Maximum sensor distance is rated at 400-500cm.
-
+int MAX_DISTANCE =40;
 
 // defines variables
 long duration;
@@ -34,10 +31,10 @@ int safetyDistance;
 void setup() {
 pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
 pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-pinMode(buzzer, OUTPUT);
-pinMode(redLed, OUTPUT);
-pinMode(blueLed, OUTPUT);
-pinMode(greenLed, OUTPUT);
+pinMode(buzzer, OUTPUT); // Sets the buzzer as an Output
+pinMode(redLed, OUTPUT); // Sets the redLed as an Output
+pinMode(blueLed, OUTPUT); // Sets the blueLed as an Output
+pinMode(greenLed, OUTPUT); // Sets the greenLed as an Output
 Serial.begin(9600); // Starts the serial communication
 }
 
