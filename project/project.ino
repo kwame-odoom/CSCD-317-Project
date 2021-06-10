@@ -1,16 +1,14 @@
-#include <NewPing.h>
-#include <HC7Segment.h>
-#include <TimedAction.h>
-void blink();
-TimedAction timedAction = TimedAction(1000,blink);
+#include "SevSeg.h"
+
+SevSeg sevseg; //Initiate a seven segment controller object
+byte numDigits = 4;  
 /* For the Led display */
-const byte u8PinOut_Digit[] = {A4,A3,A2,A1};
+const byte digitPins[] = {A4,A3,A2,A1};
 /* Pin order for segment DIO. The segment order is A,B,C,D,E,F,G,DP */
-const byte u8PinOut_Segment[] = {2,6,12,11,10,7,A0,A5};
-/* Create an instance of HC7Segment(). In this example we will be using a 4 digit
-common cathode display (CAI5461AH) */
-HC7Segment HC7Segment(7, LOW);
-/*-----Pin connection for Ultrasound sensor-----*/
+byte segmentPins[] = {2,6,12,11,10,7,A0,A5};
+bool resistorsOnSegments = 0;
+
+/*-----Pin connection for Ultrasound sensor and Led-----*/
 // defines pins numbers
 const int trigPin = 9;
 const int echoPin = 8;
@@ -18,9 +16,6 @@ const int buzzer = 13;
 const int redLed = 3;
 const int blueLed = 5;
 const int greenLed = 4;
-int DistanceCm;
-// Maximum distance we want to ping for (in centimeters).
-int MAX_DISTANCE =40;
 
 // defines variables
 long duration;
@@ -31,10 +26,14 @@ int safetyDistance;
 void setup() {
 pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
 pinMode(echoPin, INPUT); // Sets the echoPin as an Input
-pinMode(buzzer, OUTPUT); // Sets the buzzer as an Output
-pinMode(redLed, OUTPUT); // Sets the redLed as an Output
-pinMode(blueLed, OUTPUT); // Sets the blueLed as an Output
-pinMode(greenLed, OUTPUT); // Sets the greenLed as an Output
+pinMode(buzzer, OUTPUT);
+pinMode(redLed, OUTPUT);
+pinMode(blueLed, OUTPUT);
+pinMode(greenLed, OUTPUT);
+
+sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins, resistorsOnSegments);
+sevseg.setBrightness(90);
+
 Serial.begin(9600); // Starts the serial communication
 }
 
@@ -57,7 +56,7 @@ distance= duration*0.034/2;
 
 safetyDistance = distance;
 
-if (safetyDistance >= 0 and safetyDistance <= 25){
+if (safetyDistance >= 0 and safetyDistance <= 40){
   digitalWrite(buzzer, HIGH);
   digitalWrite(redLed, HIGH);
   delay(200);
@@ -67,7 +66,7 @@ if (safetyDistance >= 0 and safetyDistance <= 25){
   digitalWrite(greenLed, LOW);
 }
 
-else if (safetyDistance >=26 and safetyDistance <= 40){
+else if (safetyDistance >=41 and safetyDistance <= 85){
   digitalWrite(redLed, LOW);
   digitalWrite(blueLed, HIGH);
   digitalWrite(greenLed, LOW);
@@ -85,13 +84,11 @@ else{
   digitalWrite(greenLed, HIGH);
 }
 
-timedAction.check();
-HC7Segment.vDisplay_Number(DistanceCm,1);
-}
+sevseg.setNumber(safetyDistance, 0);
+sevseg.refreshDisplay(); 
+ 
+// Prints the distance on the Serial Monitor
+Serial.print("Distance: ");
+Serial.println(distance);
 
-void blink(){
-delay(50);// Wait 50ms between pings (about 10 pings/sec). 29ms should be the shortest delay between pings.
-Serial.print("Ping: ");
-Serial.print(DistanceCm);
-Serial.println(" cm");
 }
